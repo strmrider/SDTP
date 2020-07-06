@@ -9,15 +9,15 @@ The protocol supports the transfer of general binary data, text and files
 import data_types
 
 bytes = data_types.Bytes(your_data)
-text = data_types.Bytes(your_text)
+text = data_types.Text(your_text)
 bytes = data_types.File(your_filename, your_file_content)
 
 # get data
-bytes.data
-text.text
-file.name
-file.size
-file.data
+bytes.get_data()
+text.get_text()
+file.get_name()
+file.get_size()
+file.get_data()
 ```
 ## How to use
 ### Certificate authority
