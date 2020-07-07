@@ -85,7 +85,8 @@ session.send_file(filename, file_content)
 ### Sample application
 Here is a simple application example that uses the protocol.
 #### Server
-See .py file
+See [sample server file](https://github.com/strmrider/Secured-Internet-Protocol/blob/master/sample_server.py)
+
 Simple server the accepts clients and adds them to a clients list.
 ```Python
 import server
@@ -108,6 +109,8 @@ client.receive()
 client.send()
 ```
 #### Client
+See [sample client file](https://github.com/strmrider/Secured-Internet-Protocol/blob/master/sample_client.py)
+
 ```Python
 import client
 
