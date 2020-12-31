@@ -1,3 +1,6 @@
+[![Python 3.8](https://img.shields.io/badge/python-3.8-green.svg)](https://www.python.org/downloads/release/python-380/)
+[![Linux](https://img.shields.io/badge/Ubuntu-20.04-blue.svg)](https://www.python.org/downloads/release/python-360/)
+[![Windows](https://img.shields.io/badge/Windows-10-blue.svg)](https://www.python.org/downloads/release/python-360/)
 # Secured-Internet-Protocol
 Secured data (Bytes, text, files and objects) transfer internet protocol using a thrid party certifiacte authntication server, using hybrid encryptions and digital signatures.
 
@@ -8,6 +11,11 @@ Secured data (Bytes, text, files and objects) transfer internet protocol using a
 * Third party managble authntication server.
 * Non-blocking socket connections.
 * Simple API.
+
+## Dependencies
+* Python 3.8.5 built-in packages
+* [PyCryptodome](https://pycryptodome.readthedocs.io/en/latest/index.html)
+* [tabulate](https://pypi.org/project/tabulate/)
 
 ## How to use
 ### Certificate authority
