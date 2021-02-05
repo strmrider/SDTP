@@ -58,6 +58,7 @@ from . import session_handler
 ```
 #### Hanshake
 The handshake performs priavte and session keys exchange and certificate verfication.
+
 Server:
 ```Python
 private_key = [SERVER'S PRIVATE KEY]
@@ -81,7 +82,7 @@ session_handler.client_handshake(newtwork, session_key)
 ca_public_key = [ca server public key]
 session_handler.client_handshake_cert(session_key, network, ca_public_key)
 ```
-After the handshake proccedor create the session handler and use to send and receive data:
+After the handshake procedure, create the session handler and use it to send and receive data:
 ```Python
 session = session_handler.SessionHandler(network, session_key)
 ```
