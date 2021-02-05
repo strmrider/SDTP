@@ -56,6 +56,11 @@ The handler manages all the functionality of the session. The handler must have 
 ```Python
 from . import session_handler
 ```
+##### Socket wrapper
+Wrap your socket object to use improved receive and send funtions
+```Python
+wrapped_socket = session_handler.wrap(YOUR SOCKET OBJECT)
+```
 #### Hanshake
 The handshake performs priavte and session keys exchange and certificate verfication.
 
