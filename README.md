@@ -53,7 +53,38 @@ db.save_to_file()
 
 ### Session handler
 The handler manages all the functionality of the session. The handler must have the connection(server or client socket) of the current stream.
-
+```Python
+from . import session_handler
+```
+#### Hanshake
+The handshake performs priavte and session keys exchange and certificate verfication.
+Server:
+```Python
+private_key = [SERVER'S PRIVATE KEY]
+network = [WRAPPED SOCKET]
+# without certificate
+session_key = session_handler.server_handshake(private_key, network)
+# with a certificate
+certificate = [CERTIFICATE FROM CA SERVER]
+session_key = session_handler.server_handshake_cert(private_key, network, certificate)
+```
+Client
+```Python
+import os
+# encryption key size (in bytes)
+KEY_SIZE = 16
+session_key = os.urandom(KEY_SIZE)
+network = [WRAPPED SOCKET]
+# without certificate
+session_handler.client_handshake(newtwork, session_key)
+# with a certificate
+ca_public_key = [ca server public key]
+session_handler.client_handshake_cert(session_key, network, ca_public_key)
+```
+After the handshake proccedor create the session handler and use to send and receive data:
+```Python
+session = session_handler.SessionHandler(network, session_key)
+```
 #### Receive and send data
 ```Python
 # send binary data
