@@ -9,8 +9,10 @@ The protocol is [presentation layer](https://en.wikipedia.org/wiki/Presentation_
 * Hybrid encryption, using both RSA and AES algorithms.
 * Digital singatures (using SHA256).
 * Multipile types of data such as raw bytes, plain text, files and serialized python objects.
+* Data compression.
 * Third party managble authntication server.
 * Non-blocking socket connections.
+* Services kit including base client/server, proxy server and VPN functionalities.
 * Simple API.
 
 ## Dependencies
@@ -51,28 +53,27 @@ db.add(new_user)
 db.save_to_file()
 ```
 
-### Session handler
-The handler manages all the functionality of the session. The handler must have the connection(server or client socket) of the current stream.
-```Python
-from . import session_handler
-```
+### Session
 ##### Socket wrapper
 Wrap your socket object to use improved receive and send funtions
 ```Python
-wrapped_socket = session_handler.wrap(YOUR SOCKET OBJECT)
+from .sock import Wrapper
+
+wrapped_socket = Wrapper(YOUR SOCKET OBJECT)
 ```
 #### Hanshake
-The handshake performs priavte and session keys exchange and certificate verfication.
+The handshake performs private and session keys exchange and certificate verfication.
 
 Server:
 ```Python
+from . import handshake
 private_key = [SERVER'S PRIVATE KEY]
 network = [WRAPPED SOCKET]
 # without certificate
-session_key = session_handler.server_handshake(private_key, network)
+session_key = handshake.server_handshake(private_key, network)
 # with a certificate
 certificate = [CERTIFICATE FROM CA SERVER]
-session_key = session_handler.server_handshake_cert(private_key, network, certificate)
+session_key = handshake.server_handshake_cert(private_key, network, certificate)
 ```
 Client
 ```Python
@@ -82,16 +83,64 @@ KEY_SIZE = 16
 session_key = os.urandom(KEY_SIZE)
 network = [WRAPPED SOCKET]
 # without certificate
-session_handler.client_handshake(newtwork, session_key)
+handshake.client_handshake(newtwork, session_key)
 # with a certificate
 ca_public_key = [ca server public key]
-session_handler.client_handshake_cert(session_key, network, ca_public_key)
+handshake.client_handshake_cert(session_key, network, ca_public_key)
 ```
+#### Session handler
+The handler manages all the functionality of the session. The handler must have the connection(server or client socket) of the current stream.
 After the handshake procedure, create the session handler and use it to send and receive data:
 ```Python
-session = session_handler.SessionHandler(network, session_key)
+from .session import Session
+
+session = Session(network, session_key)
 ```
-#### Receive and send data
+#### API
+#### ``Session(network, session_key, compress_mode=False)``
+Creates a session. Receives wrapped socket and generated session key. Set *compress_mode* as True to compress the trasnferred data. Note: Data compression isn't alaways efficient. Use it to transfer large size data.
+    
+* **``receive()``**
+
+    Receives data from the session. Returns DataType object which stores the data type and the received data.
+
+* **``send_bytes(data)``**
+
+    Sends raw bytes.
+
+* **``send_text(text)``**
+
+    Sends text.
+
+* **``send_raw_file(filename, bin_file)``*
+    
+    Sends file's content in one peice. Receives filename and file's content.
+
+* **``send_file(path)``**
+
+    Sends a file in chunks instead of reading all of it into memory. Each chunk's size is defined by *max_memory* function.
+
+* **``send_object(obj)``**
+
+    Sends an Object (python Dictionary).
+
+* **``send_list(list_items)``**
+
+    Sends a lists and tuples
+
+* **``set_autosave(status)``**
+
+    Set True to save files automatically When receiving files in chunks instead of collecting them in memory.
+    
+* **``max_memory(size)``**
+    
+    Sets meximum bytes in memory when sending or receiving files.
+    
+* **``set_files_dir(directory)``**
+    
+    Sets the target directory for automatic file saving.
+
+##### Receive and send data
 ```Python
 # send binary data
 session.send_bytes(binary_data)
