@@ -141,30 +141,24 @@ Creates a session. Receives wrapped socket and generated session key. Set *compr
     Sets the target directory for automatic file saving.
 
 ##### Receive and send data
+See 'Data types' section to learn how to use received data.
 ```Python
-# send binary data
-session.send_bytes(binary_data)
-# send text
-session.send_text(text)
-# send a file
-session.send_file(filename, file_content)
-# send an object (dict)
-session.send_object(object)
-# send list
-session.send_list(list)
-```
-Receive data with receive() method. See 'Data types' section to learn how to use received data
-```Python
-data = session.receive()
-
 # check data type
 from . import constants
 
+# recieve data
 type = data.get_type()
 if type == constants.BYTES:
     print ("Raw Bytes")
 elif type == constants.TEXT:
     print ("Plain text")
+
+# send data
+
+# send binary data
+session.send_bytes(binary_data)
+# send text
+session.send_text(text)
 ```
 #### Data types
 As already mentioned, the protocol supports the transfer of general binary data, text, files, serialized python objects (also dictionary), lists and tuples (the serialization uses Python built in ['pickle'](https://docs.python.org/3/library/pickle.html) module)
@@ -183,6 +177,14 @@ elif type == constants.FILE:
     # save file. if no path is provided, the file will be saved in local dir with the original filename
     data.save()
 ```
+Types:
+* Bytes - raw bytes
+* Text - plain text
+* File - file in bytes (name, extension and size are accessible)
+    * Saved File - reference to a saved file (located in save target directory) without the data in bytes
+* Object - dict
+* List - list or tuple
+
 ### Client and server
 The library provides base client and server classes, which are suffice for most applications. The classes could be overriden and expanded for more functions and properties.
 * CA server is optional and the client/server should include the .pem file of its public key (should be provided by the CA server itself in advance).
@@ -209,14 +211,15 @@ server.start(IP, PORT)
 ```
 With certificate authentication:
 ```Python
-from src.service.baseserver import BaseServer
+from .service.baseserver import BaseServer
+from . import handshake
 
 # ca data
 ca_ip = '238.25.163.254'
 ca_port = 45123
 ca_key = 'ca_pkey.pem'
 # get signed certificate from ca server
-certificate = session_handler.request_certificate(your_username, your_password, key.publickey(), ca_key, (ca_ip, ca_port))
+certificate = handshake.request_certificate(your_username, your_password, key.publickey(), ca_key, (ca_ip, ca_port))
 # checks if certificate was granted
 if certificate:
     print ("certificate granted!")
@@ -245,7 +248,7 @@ session.send_text("hello")
 With certificate authentication:
 ```Python
 # read ca key
-ca_key = session_handler.read_key(ca_key_file)
+ca_key = handshake.read_key(ca_key_file)
 # set client to use certificate authority
 client.set_cert_mode(ca_key)
 client.connect(IP, PORT)
