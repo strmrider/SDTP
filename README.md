@@ -253,3 +253,68 @@ ca_key = handshake.read_key(ca_key_file)
 client.set_cert_mode(ca_key)
 client.connect(IP, PORT)
 ```
+
+### Proxy
+The proxy server creates a tunnel between two nodes which use the protocol.
+Client
+```python
+from .services.proxy import ProxyClient
+
+# sample addresses and ports
+proxy_ip = '65.124.78.02'
+proxy_port = 25411
+
+target_ip = '65.140.89.14'
+target_port = 41512
+
+proxy_client = ProxyClient()
+proxy_client.connect((proxy_ip, proxy_port), (target_ip, target_port))
+session = proxy_client.get_session()
+# use session...
+```
+Server
+```Python
+from .services.proxy import ProxyServer
+
+IP = '125.208.78.02'
+PORT = 25411
+
+server = ProxyServer()
+server.run(IP, PORT)
+```
+
+### VPN
+While not exactly a VPN, the service can be used as a mediator for local machine sockets and an external server without using the protocol directly. By that, it can provide the VPN functionalities of anonymity and security (encrypted traffic).
+
+First run the VPN server
+```Python
+from .service.vpn.vpnsrv import VPNServer
+
+vpn_server = VPNServer()
+vpn_server.start(IP, PORT)
+```
+Run the client on local machine
+```Python
+from .service.vpn.vpnclient import VPNClient
+
+# set client port
+client = VPNClient(24156)
+client.run(VPN_IP, VPN_PORT)
+```
+Use the service with your sockets as usual
+```Python
+import socket
+from .service.vpn.vpnclient import send_target_info
+
+# set target ip address and port
+taregt_ip = '125.208.78.02'
+target_port = 25411
+
+s = socket.socket(socket.AF_INET, sokcet.SOCK_STREAM)
+# connect to the VPN client on local machine
+s.connect(('127.0.0.1', VPN_PORT))
+# send target server ip address and port to the VPN client
+send_target_info(taregt_ip, target_port, s)
+
+# use the socket as usual and the VPN client will handle the traffic
+```
