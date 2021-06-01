@@ -256,6 +256,7 @@ client.connect(IP, PORT)
 
 ### Proxy
 The proxy server creates a tunnel between two nodes which use the protocol.
+
 Client
 ```python
 from .services.proxy import ProxyClient
@@ -284,7 +285,9 @@ server.run(IP, PORT)
 ```
 
 ### VPN
-While not exactly a VPN, the service can be used as a mediator for local machine sockets and an external server without using the protocol directly. By that, it can provide the VPN functionalities of anonymity and security (encrypted traffic).
+While not exactly a VPN, the service can be used as a mediator for local machine sockets and an external server without using the protocol directly. By that, it can provide the VPN functionalities of anonymity and security (encrypted traffic). 
+
+Very useful for network communication between two nodes that don't use the protocol, or when you want to use any other programing langauage other than python.
 
 First run the VPN server
 ```Python
