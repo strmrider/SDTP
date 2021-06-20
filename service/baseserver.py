@@ -1,5 +1,5 @@
 import socket, threading, traceback
-from .. import session_handler, socket_wrapper
+from .. import handshake, session, sock
 
 NO_CERT = 0
 CERT_VER = 1
@@ -7,20 +7,23 @@ DEFAULT_RSA_KEY_SIZE = 1024
 
 
 class BaseServer:
-    def __init__(self, ras_key=None):
-        self.__set_keys(ras_key)
+    def __init__(self, rsa_key=None):
+        self.__set_keys(rsa_key)
         self.__socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.__handshake_mode = NO_CERT
         self.__certificate = None
-        self.__bind = False
+        self.__run = False
         self.__lock = threading.Lock()
+        self.__non_block = False
+
+        self.handler = None
 
     def __set_keys(self, rsa_key):
         if rsa_key:
             self.__private_key = rsa_key
             self.__public_key = rsa_key.publickey()
         else:
-            key = session_handler.generate_rsa_keys(DEFAULT_RSA_KEY_SIZE)
+            key = handshake.generate_rsa_keys(DEFAULT_RSA_KEY_SIZE)
             self.__private_key = key
             self.__public_key = key.publickey()
 
@@ -31,44 +34,46 @@ class BaseServer:
     def start(self, ip, port, non_blocked=False):
         self.__socket.bind((ip, port))
         self.__socket.listen(5)
-        self.__bind = True
+        self.__run = True
+        print ("listening...")
         if non_blocked:
-            self.__non_blocked_bind()
+            self.__non_blocked_listen()
         else:
-            while self.__bind:
+            while self.__run:
                 self.__accept_connections()
 
-    def stop_bind(self):
+    def stop(self):
         with self.__lock:
-            self.__bind = False
+            self.__run = False
 
     def __accept_connections(self):
         connection, address = self.__socket.accept()
-        # print(address)
+        print ("connection from ", address)
         threading.Thread(target=self.__handle_client, args=(connection,)).start()
 
-    def __non_blocked_bind(self):
-        wrap = socket_wrapper.NonBlockingSocket(self.__socket)
-        while self.__bind:
+    def __non_blocked_listen(self):
+        self.__non_block = True
+        wrap = sock.NonBlockingSocket(self.__socket)
+        while self.__run:
             wrap.select()
             if wrap.is_readable():
                 self.__accept_connections()
 
     def __handle_client(self, connection):
-        network = session_handler.wrap(connection)
+        network = sock.Wrapper(connection)
         session_key = None
         try:
             if self.__handshake_mode == NO_CERT:
-                session_key = session_handler.server_handshake(self.__private_key, network)
+                session_key = handshake.server_handshake(self.__private_key, network)
             elif self.__handshake_mode == CERT_VER:
-                session_key = session_handler.server_handshake_cert(self.__private_key, network, self.__certificate)
+                session_key = handshake.server_handshake_cert(self.__private_key, network, self.__certificate)
 
-            session = session_handler.SessionHandler(network, session_key)
-            self.handle_session(session)
+            _session = session.Session(network, session_key)
+            self.handle_session(_session)
         except Exception as e:
             traceback.print_exception(type(e), e, e.__traceback__)
 
     # after the session is established, this method will use the session in anyway you want it
-    @staticmethod
-    def __handle_session(session):
-        pass
+    def handle_session(self, session):
+        if self.handler:
+            self.handler(session)

@@ -14,21 +14,21 @@ class DataType:
 
 class Bytes(DataType):
     def __init__(self, data):
-        DataType.__init__(self,  constants.BYTES, data)
+        DataType.__init__(self, constants.BYTES, data)
 
     def length(self):
         return len(self.get_data())
 
 class Text(DataType):
     def __init__(self, text):
-        DataType.__init__(self,  constants.TEXT, text.decode("utf-8"))
+        DataType.__init__(self, constants.TEXT, text.decode("utf-8"))
 
     def length(self):
         return len(self.get_data())
 
 class File(DataType):
-    def __init__(self, name, size, data):
-        DataType.__init__(self, constants.FILE, data)
+    def __init__(self, name, size, data, _type):
+        DataType.__init__(self, _type, data)
         self.__name = name
         self.__size = size
 
@@ -47,6 +47,10 @@ class File(DataType):
     def get_extension(self):
         tokens = self.__name.split('.')
         return tokens[len(tokens)-1]
+
+class SavedFile(File):
+    def __init__(self, name, size):
+        File.__init__(self, name, size, None, constants.SAVED_FILE)
 
 class Object(DataType):
     def __init__(self, data):

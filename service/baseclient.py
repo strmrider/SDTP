@@ -1,5 +1,5 @@
 import socket, os, threading
-from .. import session_handler
+from .. import session, handshake, sock
 
 NO_CERT = 0
 CERT_VER = 1
@@ -21,16 +21,19 @@ class BaseClient:
 
     def connect(self, ip, port):
         self.__socket.connect((ip, port))
-        self.__wrapper = session_handler.wrap(self.__socket)
+        self.__establish_connection()
+
+    def __establish_connection(self):
+        self.__wrapper = sock.Wrapper(self.__socket)
         if self.__mode == NO_CERT:
-            session_handler.client_handshake(self.__wrapper, self.__session_key)
+            handshake.client_handshake(self.__wrapper, self.__session_key)
         elif self.__mode == CERT_VER:
             if self.__ca_public_key:
-                session_handler.client_handshake_cert(self.__session_key, self.__wrapper, self.__ca_public_key)
+                handshake.client_handshake_cert(self.__session_key, self.__wrapper, self.__ca_public_key)
             else:
                 raise Exception("Certificate authority server's public key is not provided")
 
-        self.__session = session_handler.SessionHandler(self.__wrapper, self.__session_key)
+        self.__session = session.Session(self.__wrapper, self.__session_key, True)
 
     def get_session(self):
         return self.__session
@@ -50,6 +53,12 @@ class BaseClient:
         while self.__non_block_mode:
             self.__wrapper.get_non_blocking().select()
             if self.__wrapper.get_non_blocking().is_readable():
-                print(self.__session.receive())
+                self.handle_income_data(self.__session.receive())
             if self.__wrapper.get_non_blocking().is_writeable():
                 self.__wrapper.send_from_queue()
+
+    def handle_income_data(self, received_data):
+        """
+        When using class's built-in non blocking connection, the income data will be handled here
+        """
+        pass
