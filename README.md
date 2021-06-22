@@ -1,7 +1,7 @@
 [![Python 3.8](https://img.shields.io/badge/python-3.8-green.svg)](https://www.python.org/downloads/release/python-380/)
 [![Linux](https://img.shields.io/badge/Ubuntu-20.04-blue.svg)](https://www.python.org/downloads/release/python-360/)
 [![Windows](https://img.shields.io/badge/Windows-10-blue.svg)](https://www.python.org/downloads/release/python-360/)
-# Secured-Internet-Protocol
+# Secured-Data-Transfer-Protocol
 Secured data (bytes, text, files and objects) transfer internet protocol using a thrid party certifiacte authntication server, hybrid encryptions and digital signatures.
 
 The protocol is [presentation layer](https://en.wikipedia.org/wiki/Presentation_layer) related and serves as an infrastructure for TCP-based application layer protocols, providing data encryption/decryption and serializations.
