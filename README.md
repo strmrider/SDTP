@@ -321,3 +321,37 @@ send_target_info(taregt_ip, target_port, s)
 
 # use the socket as usual and the VPN client will handle the traffic
 ```
+
+### Network broadcast
+Creates a network of peers and broadcats data directly between all of its members (instead of establishing a private connections with each other).
+
+Create and run the server:
+```Python
+from src.service.network import NetworkServer
+
+IP = '125.208.78.02'
+PORT = 25411
+
+server = NetworkServer()
+server.start(IP, PORT)
+````
+
+Connect as a client:
+```Python
+from src.service.network import NetworkClient
+
+client = NetworkClient()
+client.connect(IP, PORT)
+```
+
+Use the network as client:
+```Python
+# creates a new network
+client.create_network('new network')
+# joins to a network
+client.join_network('new network')
+
+# use the session after joining a network
+client.session.client.session.send_text('message')
+data = client.session.client.receive()
+```
