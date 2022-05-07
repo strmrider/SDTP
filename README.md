@@ -2,15 +2,15 @@
 [![Linux](https://img.shields.io/badge/Ubuntu-20.04-blue.svg)](https://www.python.org/downloads/release/python-360/)
 [![Windows](https://img.shields.io/badge/Windows-10-blue.svg)](https://www.python.org/downloads/release/python-360/)
 # Secured-Data-Transfer-Protocol
-Secured data (bytes, text, files and objects) transfer internet protocol using a thrid party certifiacte authntication server, hybrid encryptions and digital signatures.
+Secured data (bytes, text, files and objects) transfer internet protocol using a third party certificate authentication server, hybrid encryptions and digital signatures.
 
 The protocol is [presentation layer](https://en.wikipedia.org/wiki/Presentation_layer) related and serves as an infrastructure for TCP-based application layer protocols, providing data encryption/decryption and serializations.
 ## Features
 * Hybrid encryption, using both RSA and AES algorithms.
 * Digital singatures (using SHA256).
-* Multipile types of data such as raw bytes, plain text, files and serialized python objects.
+* Multiple types of data such as raw bytes, plain text, files and serialized python objects.
 * Data compression.
-* Third party managble authntication server.
+* Third party manageable authentication server.
 * Non-blocking socket connections.
 * Services kit including base client/server, proxy server and VPN functionalities.
 * Simple API.
@@ -22,7 +22,7 @@ The protocol is [presentation layer](https://en.wikipedia.org/wiki/Presentation_
 
 ## How to use
 ### Certificate authority
-First establish the Certificate authority (CA) server. The Server's public key should be known by all clients in advance. The use of this server is optional in case no third party confirmation is desiered.
+First establish the Certificate authority (CA) server. The Server's public key should be known by all clients in advance. The use of this server is optional in case no third party confirmation is desired.
 ```Python
 from .ca import caserver
 
@@ -55,14 +55,14 @@ db.save_to_file()
 
 ### Session
 ##### Socket wrapper
-Wrap your socket object to use improved receive and send funtions
+Wrap your socket object to use improved receive and send functions
 ```Python
 from .sock import Wrapper
 
 wrapped_socket = Wrapper(YOUR SOCKET OBJECT)
 ```
 #### Hanshake
-The handshake performs private and session keys exchange and certificate verfication.
+The handshake performs private and session keys exchange and certificate verification.
 
 Server:
 ```Python
@@ -98,7 +98,7 @@ session = Session(network, session_key)
 ```
 #### API
 #### ``Session(network, session_key, compress_mode=False)``
-Creates a session. Receives wrapped socket and generated session key. Set *compress_mode* as True to compress the trasnferred data. Note: Data compression isn't alaways efficient. Use it to transfer large size data.
+Creates a session. Receives wrapped socket and generated session key. Set *compress_mode* as True to compress the transferred data. Note: Data compression isn't always efficient. Use it to transfer large size data.
     
 * **``receive()``**
 
@@ -114,7 +114,7 @@ Creates a session. Receives wrapped socket and generated session key. Set *compr
 
 * **``send_raw_file(filename, bin_file)``*
     
-    Sends file's content in one peice. Receives filename and file's content.
+    Sends file's content in one piece. Receives filename and file's content.
 
 * **``send_file(path)``**
 
@@ -134,7 +134,7 @@ Creates a session. Receives wrapped socket and generated session key. Set *compr
     
 * **``max_memory(size)``**
     
-    Sets meximum bytes in memory when sending or receiving files.
+    Sets maximum bytes in memory when sending or receiving files.
     
 * **``set_files_dir(directory)``**
     
@@ -161,7 +161,7 @@ session.send_bytes(binary_data)
 session.send_text(text)
 ```
 #### Data types
-As already mentioned, the protocol supports the transfer of general binary data, text, files, serialized python objects (also dictionary), lists and tuples (the serialization uses Python built in ['pickle'](https://docs.python.org/3/library/pickle.html) module)
+As already mentioned, the protocol supports the transfer of general binary data, text, files, serialized python objects (also dictionary), lists and tuples (the serialization uses Python built-in ['pickle'](https://docs.python.org/3/library/pickle.html) module)
 ```Python
 from . import constants
 
@@ -186,8 +186,8 @@ Types:
 * List - list or tuple
 
 ### Client and server
-The library provides base client and server classes, which are suffice for most applications. The classes could be overriden and expanded for more functions and properties.
-* CA server is optional and the client/server should include the .pem file of its public key (should be provided by the CA server itself in advance).
+The library provides base client and server classes, which are sufficient for most applications. The classes could be overridden and expanded for more functions and properties.
+* CA server is optional and the client/server should include the .pem file of its public key (which should be provided by the CA server itself in advance).
 * Use threads in order to use both receive and send functions simultaneously.
 #### Server
 ```Python
@@ -255,7 +255,7 @@ client.connect(IP, PORT)
 ```
 
 ### Proxy
-The proxy server creates a tunnel between two nodes which use the protocol.
+The proxy server creates a tunnel between two nodes that use the protocol.
 
 Client
 ```python
@@ -287,7 +287,7 @@ server.run(IP, PORT)
 ### VPN
 While not exactly a VPN, the service can be used as a mediator for local machine sockets and an external server without using the protocol directly. By that, it can provide the VPN functionalities of anonymity and security (encrypted traffic). 
 
-Very useful for network communication between two nodes that don't use the protocol, or when you want to use any other programing langauage other than python.
+Very useful for network communication between two nodes that don't use the protocol, or when you want to use any other programing language other than python.
 
 First run the VPN server
 ```Python
@@ -323,7 +323,7 @@ send_target_info(taregt_ip, target_port, s)
 ```
 
 ### Network broadcast
-Creates a network of peers and broadcats data directly between all of its members (instead of establishing a private connections with each other).
+Creates a network of peers and broadcasts data directly between all of its members (instead of establishing private connections with each other).
 
 Create and run the server:
 ```Python
